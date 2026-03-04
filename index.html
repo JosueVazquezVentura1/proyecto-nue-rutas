@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta - Sistema Nacional de Transporte Público</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        .section { margin: 30px 0; padding: 20px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #3498db; }
+        .section h2 { color: #2c3e50; margin-bottom: 15px; font-size: 1.3em; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #34495e; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="tel"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        .radio-group, .checkbox-group { display: flex; flex-wrap: wrap; gap: 15px; }
+        .radio-group label, .checkbox-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; }
+        .required { color: #e74c3c; }
+        .btn-submit { background: #27ae60; color: white; padding: 15px 40px; border: none; border-radius: 5px; 
+                      font-size: 16px; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn-submit:hover { background: #219a52; }
+        .mensaje { padding: 15px; margin: 20px 0; border-radius: 5px; display: none; }
+        .exito { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .likert { display: flex; justify-content: space-between; max-width: 400px; }
+        .likert label { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
+        @media (max-width: 600px) { .container { padding: 15px; } .likert { flex-wrap: wrap; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚌 Encuesta Nacional de Transporte Público</h1>
+        <p class="subtitle">Sistema de Evaluación de Proyectos de Movilidad Urbana</p>
+
+        <form id="encuestaForm" action="guardar.php" method="POST">
+            
+            <!-- SECCIÓN 1: DATOS GENERALES -->
+            <div class="section">
+                <h2>📋 Sección 1: Datos Generales</h2>
+                <div class="form-group">
+                    <label>Plataforma de respuesta <span class="required">*</span></label>
+                    <select name="plataforma_respuesta" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Web">Web</option>
+                        <option value="App">App Móvil</option>
+                        <option value="Presencial">Presencial</option>
+                        <option value="Kiosco">Kiosco</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: DATOS DEMOGRÁFICOS -->
+            <div class="section">
+                <h2>👤 Sección 2: Datos Demográficos</h2>
+                <div class="form-group">
+                    <label>Edad <span class="required">*</span></label>
+                    <input type="number" name="edad" min="0" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label>Sexo/Género <span class="required">*</span></label>
+                    <select name="sexo" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Otro">Otro</option>
+                        <option value="Prefiero no decir">Prefiero no decir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ocupación <span class="required">*</span></label>
+                    <select name="ocupacion" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Estudiante">Estudiante</option>
+                        <option value="Empleado">Empleado</option>
+                        <option value="Independiente">Independiente</option>
+                        <option value="Jubilado">Jubilado</option>
+                        <option value="Ama de casa">Ama de casa</option>
+                        <option value="Desempleado">Desempleado</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nivel de Estudios <span class="required">*</span></label>
+                    <select name="nivel_estudios" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Primaria">Primaria</option>
+                        <option value="Secundaria">Secundaria</option>
+                        <option value="Bachillerato">Bachillerato</option>
+                        <option value="Licenciatura">Licenciatura</option>
+                        <option value="Posgrado">Posgrado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: UBICACIÓN -->
+            <div class="section">
+                <h2>📍 Sección 3: Ubicación</h2>
+                <div class="form-group">
+                    <label>País</label>
+                    <input type="text" name="pais" value="México" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Estado <span class="required">*</span></label>
+                    <select name="estado" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Ciudad de México">Ciudad de México</option>
+                        <option value="Yucatán">Yucatán</option>
+                        <option value="Tabasco">Tabasco</option>
+                        <option value="Jalisco">Jalisco</option>
+                        <option value="Nuevo León">Nuevo León</option>
+                        <!-- Agrega más estados según necesites -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ciudad/Municipio <span class="required">*</span></label>
+                    <input type="text" name="ciudad" required>
+                </div>
+                <div class="form-group">
+                    <label>Alcaldía/Municipio</label>
+                    <input type="text" name="alcaldia_municipio">
+                </div>
+                <div class="form-group">
+                    <label>Colonia</label>
+                    <input type="text" name="colonia">
+                </div>
+                <div class="form-group">
+                    <label>Código Postal</label>
+                    <input type="text" name="codigo_postal" pattern="[0-9]{5}" maxlength="5">
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: HÁBITOS DE MOVILIDAD -->
+            <div class="section">
+                <h2>🚗 Sección 4: Hábitos de Movilidad</h2>
+                <div class="form-group">
+                    <label>Medio de Transporte Más Común <span class="required">*</span></label>
+                    <select name="medio_transporte_principal" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Transporte público">Transporte público (Metro, Metrobús, Autobús)</option>
+                        <option value="Vehículo particular">Vehículo particular</option>
+                        <option value="Bicicleta">Bicicleta</option>
+                        <option value="A pie">A pie</option>
+                        <option value="Taxi/Uber/Didi">Taxi/Uber/Didi</option>
+                        <option value="Motocicleta">Motocicleta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Frecuencia de Uso del Transporte Público <span class="required">*</span></label>
+                    <select name="frecuencia_transporte_publico" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Diario">Diario</option>
+                        <option value="3-5 veces por semana">3-5 veces por semana</option>
+                        <option value="1-2 veces por semana">1-2 veces por semana</option>
+                        <option value="Ocasionalmente">Ocasionalmente</option>
+                        <option value="Nunca">Nunca</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Satisfacción con Transporte Actual (1-5) <span class="required">*</span></label>
+                    <div class="likert">
+                        <label><input type="radio" name="satisfaccion_transporte_actual" value="1" required> 1<br>Muy insatisfecho</label>
+                        <label><input type="radio" name="satisfaccion_transporte_actual" value="2"> 2</label>
+                        <label><input type="radio" name="satisfaccion_transporte_actual" value="3"> 3</label>
+                        <label><input type="radio" name="satisfaccion_transporte_actual" value="4"> 4</label>
+                        <label><input type="radio" name="satisfaccion_transporte_actual" value="5"> 5<br>Muy satisfecho</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 5: PROYECTO EVALUADO -->
+            <div class="section">
+                <h2>🏗️ Sección 5: Proyecto Evaluado</h2>
+                <div class="form-group">
+                    <label>Nombre del Proyecto/Ruta Propuesta <span class="required">*</span></label>
+                    <input type="text" name="nombre_proyecto" required placeholder="Ej: Ampliación Línea 3 Metrobús CDMX">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Sistema de Transporte <span class="required">*</span></label>
+                    <select name="tipo_sistema" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Metrobús/BRT">Metrobús/BRT</option>
+                        <option value="Metro">Metro</option>
+                        <option value="Tren Ligero">Tren Ligero</option>
+                        <option value="Trolebús">Trolebús</option>
+                        <option value="Tranvía">Tranvía</option>
+                        <option value="Cablebús">Cablebús</option>
+                        <option value="Autobús Express">Autobús Express</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Proyecto <span class="required">*</span></label>
+                    <select name="tipo_proyecto" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Nueva línea">Nueva línea</option>
+                        <option value="Ampliación de línea existente">Ampliación de línea existente</option>
+                        <option value="Reparación de ruta existente">Reparación de ruta existente</option>
+                        <option value="Remodelación de ruta existente">Remodelación de ruta existente</option>
+                        <option value="Modernización de flota">Modernización de flota</option>
+                        <option value="Electrificación de ruta">Electrificación de ruta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trayecto Propuesto/Afectado</label>
+                    <textarea name="trayecto_propuesto" placeholder="Ej: De Etiopía a Coyoacán por Av. Cuauhtémoc"></textarea>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 6: OPINIÓN PRINCIPAL -->
+            <div class="section">
+                <h2>✅ Sección 6: Opinión Sobre el Proyecto</h2>
+                <div class="form-group">
+                    <label>Voto Principal <span class="required">*</span></label>
+                    <select name="voto_principal" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Sí, totalmente de acuerdo">✅ Sí, totalmente de acuerdo</option>
+                        <option value="Parcialmente de acuerdo">⚠️ Parcialmente de acuerdo</option>
+                        <option value="No, en desacuerdo">❌ No, en desacuerdo</option>
+                        <option value="No tengo opinión">❓ No tengo opinión</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nivel de Necesidad (1-5) <span class="required">*</span></label>
+                    <div class="likert">
+                        <label><input type="radio" name="nivel_necesidad" value="1" required> 1<br>Nada necesario</label>
+                        <label><input type="radio" name="nivel_necesidad" value="2"> 2</label>
+                        <label><input type="radio" name="nivel_necesidad" value="3"> 3</label>
+                        <label><input type="radio" name="nivel_necesidad" value="4"> 4</label>
+                        <label><input type="radio" name="nivel_necesidad" value="5"> 5<br>Muy necesario</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>¿Te Beneficiaría el Proyecto? <span class="required">*</span></label>
+                    <select name="te_beneficia" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Sí, directamente">Sí, directamente</option>
+                        <option value="Sí, indirectamente">Sí, indirectamente</option>
+                        <option value="No me beneficia">No me beneficia</option>
+                        <option value="No estoy seguro(a)">No estoy seguro(a)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 7: CRITERIOS DE EVALUACIÓN -->
+            <div class="section">
+                <h2>📊 Sección 7: Criterios de Evaluación</h2>
+                <p style="margin-bottom: 15px; color: #7f8c8d;">Califica del 1 (Muy negativo) al 5 (Muy positivo)</p>
+                
+                <div class="form-group">
+                    <label>Impacto en Movilidad</label>
+                    <div class="likert">
+                        <label><input type="radio" name="impacto_movilidad" value="1"> 1</label>
+                        <label><input type="radio" name="impacto_movilidad" value="2"> 2</label>
+                        <label><input type="radio" name="impacto_movilidad" value="3"> 3</label>
+                        <label><input type="radio" name="impacto_movilidad" value="4"> 4</label>
+                        <label><input type="radio" name="impacto_movilidad" value="5"> 5</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Impacto Ambiental</label>
+                    <div class="likert">
+                        <label><input type="radio" name="impacto_ambiental" value="1"> 1</label>
+                        <label><input type="radio" name="impacto_ambiental" value="2"> 2</label>
+                        <label><input type="radio" name="impacto_ambiental" value="3"> 3</label>
+                        <label><input type="radio" name="impacto_ambiental" value="4"> 4</label>
+                        <label><input type="radio" name="impacto_ambiental" value="5"> 5</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Impacto en Seguridad</label>
+                    <div class="likert">
+                        <label><input type="radio" name="impacto_seguridad" value="1"> 1</label>
+                        <label><input type="radio" name="impacto_seguridad" value="2"> 2</label>
+                        <label><input type="radio" name="impacto_seguridad" value="3"> 3</label>
+                        <label><input type="radio" name="impacto_seguridad" value="4"> 4</label>
+                        <label><input type="radio" name="impacto_seguridad" value="5"> 5</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Relación Costo-Beneficio</label>
+                    <div class="likert">
+                        <label><input type="radio" name="relacion_costo_beneficio" value="1"> 1</label>
+                        <label><input type="radio" name="relacion_costo_beneficio" value="2"> 2</label>
+                        <label><input type="radio" name="relacion_costo_beneficio" value="3"> 3</label>
+                        <label><input type="radio" name="relacion_costo_beneficio" value="4"> 4</label>
+                        <label><input type="radio" name="relacion_costo_beneficio" value="5"> 5</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 8: PREGUNTAS CONDICIONALES -->
+            <div class="section">
+                <h2>💬 Sección 8: Comentarios Adicionales</h2>
+                <div class="form-group">
+                    <label>Recomendaciones (si votaste SÍ)</label>
+                    <textarea name="recomendaciones_si" placeholder="Ej: Trabajos nocturnos, No talar árboles..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Consideraciones (si votaste PARCIALMENTE)</label>
+                    <textarea name="consideraciones_parcial" placeholder="Ej: Que llegue solo hasta cierto punto..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Argumentos (si votaste NO)</label>
+                    <textarea name="argumentos_no" placeholder="Ej: Más tráfico, Ya hay metro..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Razón Principal del Voto</label>
+                    <select name="razon_principal_voto">
+                        <option value="">Seleccione...</option>
+                        <option value="Vialidad/Tráfico">Vialidad/Tráfico</option>
+                        <option value="Ambiental">Ambiental</option>
+                        <option value="Económica">Económica</option>
+                        <option value="Social">Social</option>
+                        <option value="Seguridad">Seguridad</option>
+                        <option value="Tiempo de traslado">Tiempo de traslado</option>
+                        <option value="Costo">Costo</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 12: VALIDACIÓN -->
+            <div class="section">
+                <h2>🔒 Sección 12: Validación y Consentimiento</h2>
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="consentimiento_datos" value="1">
+                        Acepto el uso de mis datos para fines de investigación
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-group">
+                        <input type="checkbox" name="consentimiento_contacto" value="1">
+                        Acepto ser contactado para seguimiento
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Email (opcional)</label>
+                    <input type="email" name="email_opcional">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">📤 Enviar Encuesta</button>
+        </form>
+
+        <div id="mensaje" class="mensaje"></div>
+    </div>
+
+    <script>
+        document.getElementById('encuestaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const mensaje = document.getElementById('mensaje');
+            const datos = new FormData(form);
+
+            try {
+                const respuesta = await fetch('guardar.php', {
+                    method: 'POST',
+                    body: datos
+                });
+                const json = await respuesta.json();
+
+                if (json.success) {
+                    mensaje.className = 'mensaje exito';
+                    mensaje.style.display = 'block';
+                    mensaje.textContent = '✅ ¡Gracias! Tu respuesta ha sido registrada correctamente.';
+                    form.reset();
+                    window.scrollTo(0, 0);
+                } else {
+                    mensaje.className = 'mensaje error';
+                    mensaje.style.display = 'block';
+                    mensaje.textContent = '❌ Error: ' + (json.mensaje || 'Intente nuevamente');
+                }
+            } catch (error) {
+                mensaje.className = 'mensaje error';
+                mensaje.style.display = 'block';
+                mensaje.textContent = '❌ Error de conexión. Intente más tarde.';
+            }
+        });
+    </script>
+</body>
+</html>
