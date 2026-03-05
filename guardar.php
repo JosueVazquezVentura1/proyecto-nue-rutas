@@ -2,13 +2,12 @@
 /**
  * Backend para guardar respuestas de encuesta
  * Sistema Nacional de Transporte Público
- * 
- * @author Tu Nombre
- * @version 1.0
  */
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
 // Solo permitir método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -78,18 +77,20 @@ if (!empty($errores)) {
 }
 
 try {
-    // Conexión a PostgreSQL
-    $dsn = sprintf(
-        'pgsql:host=%s;port=%s;dbname=%s',
-        'dpg-d6jmcirh46gs73bgpphg-a.oregon-postgres.render.com',
-        '5432',
-        'encuestaaceptacion'
-    );
+    // Configuración de conexión
+    $host = 'dpg-d6jmcirh46gs73bgpphg-a.oregon-postgres.render.com';
+    $port = '5432';
+    $dbname = 'encuestaaceptacion';
+    $user = 'encuestaaceptacion_user';
+    $password = 'FCgjnHaRbMuv1FyKwNKrSoK4anHJ4l70';
     
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+    
+    // Conexión a PostgreSQL
     $pdo = new PDO(
         $dsn,
-        'encuestaaceptacion_user',
-        'FCgjnHaRbMuv1FyKwNKrSoK4anHJ4l70',
+        $user,
+        $password,
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -97,7 +98,7 @@ try {
         ]
     );
     
-    // Consulta SQL con Prepared Statements
+    // Consulta SQL
     $sql = "INSERT INTO respuestas_encuesta (
         plataforma_respuesta, edad, sexo, ocupacion, nivel_estudios,
         pais, estado, ciudad, alcaldia_municipio, colonia, codigo_postal,
@@ -106,7 +107,8 @@ try {
         voto_principal, nivel_necesidad, te_beneficia,
         impacto_movilidad, impacto_ambiental, impacto_seguridad, relacion_costo_beneficio,
         recomendaciones_si, consideraciones_parcial, argumentos_no, razon_principal_voto,
-        consentimiento_datos, consentimiento_contacto, email_opcional, ip_address
+        consentimiento_datos, consentimiento_contacto, email_opcional, ip_address,
+        respondido_en
     ) VALUES (
         :plataforma_respuesta, :edad, :sexo, :ocupacion, :nivel_estudios,
         :pais, :estado, :ciudad, :alcaldia_municipio, :colonia, :codigo_postal,
@@ -115,7 +117,8 @@ try {
         :voto_principal, :nivel_necesidad, :te_beneficia,
         :impacto_movilidad, :impacto_ambiental, :impacto_seguridad, :relacion_costo_beneficio,
         :recomendaciones_si, :consideraciones_parcial, :argumentos_no, :razon_principal_voto,
-        :consentimiento_datos, :consentimiento_contacto, :email_opcional, :ip_address
+        :consentimiento_datos, :consentimiento_contacto, :email_opcional, :ip_address,
+        NOW()
     )";
     
     $stmt = $pdo->prepare($sql);
@@ -128,8 +131,21 @@ try {
     ]);
     
 } catch (PDOException $e) {
+    // Log del error (en producción no mostrar al usuario)
     error_log("Error de base de datos: " . $e->getMessage());
+    
     http_response_code(500);
-    echo json_encode(['success' => false, 'mensaje' => 'Error interno del servidor']);
+    echo json_encode([
+        'success' => false, 
+        'mensaje' => 'Error al guardar: ' . $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    error_log("Error general: " . $e->getMessage());
+    
+    http_response_code(500);
+    echo json_encode([
+        'success' => false, 
+        'mensaje' => 'Error interno del servidor'
+    ]);
 }
 ?>
