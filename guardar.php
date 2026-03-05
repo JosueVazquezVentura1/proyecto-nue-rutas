@@ -77,16 +77,17 @@ if (!empty($errores)) {
 }
 
 try {
-    // Configuración de conexión
+    // Configuración de conexión CON SSL
     $host = 'dpg-d6jmcirh46gs73bgpphg-a.oregon-postgres.render.com';
     $port = '5432';
     $dbname = 'encuestaaceptacion';
     $user = 'encuestaaceptacion_user';
     $password = 'FCgjnHaRbMuv1FyKwNKrSoK4anHJ4l70';
     
-    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+    // DSN con SSL
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=require";
     
-    // Conexión a PostgreSQL
+    // Conexión a PostgreSQL con SSL
     $pdo = new PDO(
         $dsn,
         $user,
@@ -131,7 +132,6 @@ try {
     ]);
     
 } catch (PDOException $e) {
-    // Log del error (en producción no mostrar al usuario)
     error_log("Error de base de datos: " . $e->getMessage());
     
     http_response_code(500);
